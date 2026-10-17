@@ -4,13 +4,16 @@ import joblib
 import pandas as pd
 from model.my_pipline import custom_threshold, prepare_catboost_features
 
+# распаковываем модель из бинарника
+model = joblib.load('model/my_model.joblib')
+
+
 async def predict_view(data: PredictionFormData):
     """
     view-функция для единственного роута, возвращает предсказание
     :param data:
     :return:
     """
-    model = joblib.load('model/my_model.joblib')
     data_df = process_incoming_data(data.dict())
     prediction_proba = float(model.predict_proba(data_df)[0, 1])
     if prediction_proba<custom_threshold:
