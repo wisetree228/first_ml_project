@@ -10,6 +10,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 import joblib
 
+from model.preprocessor import prepare_catboost_features
+
 # dataset: https://www.kaggle.com/code/ybifoundation/telecom-customer-churn-prediction
 df = pd.read_csv('https://github.com/YBIFoundation/Dataset/raw/main/TelecomCustomerChurn.csv')
 # print(df.describe())
@@ -43,13 +45,7 @@ num_features = X.select_dtypes(include=['number']).columns.tolist()
 
 
 
-def prepare_catboost_features(df):
-    df = df.copy()
-    # CatBoost требует, чтобы категориальные признаки были строками или типа category,
-    # а пропуски в них заменяем на специальную строку 'Missing'
-    for col in cat_features:
-        df[col] = df[col].astype(str).fillna('Missing')
-    return df
+
 
 # Обернем предобработку в Pipeline
 preprocessor = Pipeline(steps=[
@@ -70,38 +66,43 @@ pipeline = Pipeline(steps=[
     ))
 ])
 
-# обучаем
-pipeline.fit(x_train, y_train)
 
-# y_pred = pipeline.predict(x_test)
-y_proba = pipeline.predict_proba(x_test)[:, 1]
 custom_threshold = 0.3
 
-# 3. Получаем новые предсказания: если вероятность >= 0.3, то 1, иначе 0
-y_pred = (y_proba >= custom_threshold).astype(int)
+
+# обучаем
+if __name__ == "__main__":
+    pipeline.fit(x_train, y_train)
+
+    # y_pred = pipeline.predict(x_test)
+    y_proba = pipeline.predict_proba(x_test)[:, 1]
 
 
-# оцениваем метрики
-# Базовый отчет: Precision, Recall, F1-score по каждому классу + Accuracy
-print("--- Classification Report ---")
-print(classification_report(y_test, y_pred))
+    # 3. Получаем новые предсказания: если вероятность >= 0.3, то 1, иначе 0
+    y_pred = (y_proba >= custom_threshold).astype(int)
 
-# Вероятностные метрики (ROC-AUC и PR-AUC)
-roc_auc = roc_auc_score(y_test, y_proba)
-pr_auc = average_precision_score(y_test, y_proba) # PR-AUC (Area under Precision-Recall curve)
-accuracy = accuracy_score(y_test, y_pred)
 
-print(f"Accuracy:  {accuracy:.4f}")
-print(f"ROC-AUC:   {roc_auc:.4f}")
-print(f"PR-AUC:    {pr_auc:.4f}")
+    # оцениваем метрики
+    # Базовый отчет: Precision, Recall, F1-score по каждому классу + Accuracy
+    print("--- Classification Report ---")
+    print(classification_report(y_test, y_pred))
 
-# Матрица ошибок (Confusion Matrix)
-print("\n--- Confusion Matrix ---")
-print(confusion_matrix(y_test, y_pred))
+    # Вероятностные метрики (ROC-AUC и PR-AUC)
+    roc_auc = roc_auc_score(y_test, y_proba)
+    pr_auc = average_precision_score(y_test, y_proba) # PR-AUC (Area under Precision-Recall curve)
+    accuracy = accuracy_score(y_test, y_pred)
 
-# упаковываем
-filename = 'my_model.joblib'
-joblib.dump(pipeline, filename)
+    print(f"Accuracy:  {accuracy:.4f}")
+    print(f"ROC-AUC:   {roc_auc:.4f}")
+    print(f"PR-AUC:    {pr_auc:.4f}")
+
+    # Матрица ошибок (Confusion Matrix)
+    print("\n--- Confusion Matrix ---")
+    print(confusion_matrix(y_test, y_pred))
+
+    # упаковываем
+    filename = 'my_model.joblib'
+    joblib.dump(pipeline, filename)
 '''
 Final scores:
 --- Classification Report ---
