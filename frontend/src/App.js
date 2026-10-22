@@ -117,6 +117,18 @@ export default function App() {
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         body { background-color: #f4f6f8; color: #333; }
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Шапка с кнопкой исходного кода */
+        .top-bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+        .btn-source {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 8px 16px; background-color: #24292e; color: white;
+          border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none;
+          transition: background 0.2s, transform 0.1s;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn-source:hover { background-color: #2f363d; transform: translateY(-1px); }
+
         .card { background: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         h1 { font-size: 24px; font-weight: 700; color: #1a202c; margin-bottom: 8px; }
         p.subtitle { font-size: 14px; color: #718096; margin-bottom: 20px; }
@@ -159,6 +171,18 @@ export default function App() {
         .result-box.leave { background-color: #fff5f5; border: 1px solid #fed7d7; color: #742a2a; }
         .error-box { margin-top: 24px; padding: 16px; background-color: #fff5f5; border: 1px solid #feb2b2; color: #9b2c2c; border-radius: 8px; word-break: break-word; }
       `}</style>
+
+      {/* Кнопка ссылки на исходный код */}
+      <div className="top-bar">
+        <a 
+          href="https://github.com/wisetree228/first_ml_project" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="btn-source"
+        >
+          📂 Исходный код проекта (GitHub)
+        </a>
+      </div>
 
       <div className="card">
         <h1>Прогноз оттока клиента (Telco Churn)</h1>

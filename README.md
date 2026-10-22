@@ -12,6 +12,8 @@
 - CatBoost, scikit-learn
 #### Frontend:
 - ReactJS
+
+Датасет - https://www.kaggle.com/code/ybifoundation/telecom-customer-churn-prediction
 #### Паттерн проектирования на бэкенде - MVC
 
 #### Для поднятия всего проекта используется docker compose
